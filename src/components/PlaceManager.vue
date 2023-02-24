@@ -25,18 +25,19 @@
 <script lang="ts">
 import draggable from "vuedraggable";
 import TheInput from "./TheInput.vue";
-import { computed, ref, defineComponent } from "vue";
+import { computed, ref, defineComponent, PropType } from "vue";
 import { Icon } from "@vicons/utils";
 import Delete24Regular from "@vicons/fluent/Delete24Regular";
 import { getWeaterByPlace } from "@/utils/fetchWeater";
 import { useLoading } from "@/store/loading";
+import { Place } from "@/types/Place";
 
 export default defineComponent({
   name: "PlaceManager",
   components: { draggable, Icon, TheInput, Delete24Regular },
   props: {
     places: {
-      type: Array,
+      type: Array as PropType<Place[]>,
       default: () => [],
     },
   },
@@ -50,7 +51,9 @@ export default defineComponent({
     const loading = useLoading();
 
     const deletePlace = (id: number) => {
-      getPlaces.value = getPlaces.value.filter((place: any) => place.id !== id);
+      getPlaces.value = getPlaces.value.filter(
+        (place: Place): boolean => place.id !== id
+      );
     };
 
     const error = ref(null);
@@ -58,7 +61,7 @@ export default defineComponent({
     const appPlace = async () => {
       if (!newPlace.value) return alert("field can't be empty");
       if (
-        getPlaces.value.some((placeOfList: any) => {
+        getPlaces.value.some((placeOfList: Place) => {
           return (
             placeOfList.name.toLowerCase() === newPlace.value.toLowerCase()
           );

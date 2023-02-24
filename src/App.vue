@@ -34,6 +34,7 @@ import Settings24Regular from "@vicons/fluent/Settings24Regular";
 import { datca } from "./datca";
 import { useLoading } from "@/store/loading";
 import { getWeaterByPlace, getWeaterByCoords } from "./utils/fetchWeater";
+import { Place, Coordinates } from "@/types/Place";
 
 export default defineComponent({
   name: "App",
@@ -47,15 +48,15 @@ export default defineComponent({
   setup() {
     const isSettingsOpen = ref(false);
     const weatherData = ref(null);
-    const listOfPlaces = ref<any>([]);
+    const listOfPlaces = ref<Place[]>([]);
     const loading = useLoading();
 
-    const coordinates = ref<any>({
-      lat: null,
-      lon: null,
+    const coordinates = ref<Coordinates>({
+      lat: 0,
+      lon: 0,
     });
 
-    const getWeatherByCoords = async (): Promise<any> => {
+    const getWeatherByCoords = async (): Promise<Place> => {
       if (!loading.isLoading) loading.switchLoading();
       const response = await getWeaterByCoords(coordinates.value);
       if (response.ok) {
@@ -71,8 +72,8 @@ export default defineComponent({
       }
     };
 
-    const addNewPlace = (place: any) => {
-      listOfPlaces.value = place;
+    const addNewPlace = (placeArray: Place[]) => {
+      listOfPlaces.value = placeArray;
     };
 
     onMounted(async () => {
@@ -90,7 +91,7 @@ export default defineComponent({
           console.log("net dostupa");
         }
       }
-      listOfPlaces.value.map(async (place: any) => {
+      listOfPlaces.value.map(async (place: Place) => {
         const response = await getWeaterByPlace(place.name);
         if (response.ok) {
           loading.switchLoading();
