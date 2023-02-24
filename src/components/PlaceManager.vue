@@ -5,7 +5,7 @@
       <draggable v-model="getPlaces" item-key="id">
         <template #item="{ element }">
           <div class="place-manager__item">
-            <div> {{ element.name }} </div>
+            <div>{{ element.name }}</div>
             <Icon :size="18" @click="deletePlace(element.id)">
               <Delete24Regular />
             </Icon>
@@ -23,68 +23,77 @@
 </template>
 
 <script lang="ts">
-import draggable from 'vuedraggable'
-import TheInput from './TheInput.vue'
-import { computed, ref, defineComponent } from 'vue'
-import { Icon } from '@vicons/utils'
-import Delete24Regular from '@vicons/fluent/Delete24Regular'
-import { getWeaterByPlace } from '@/utils/fetchWeater'
-import { useLoading } from '@/store/loading'
+import draggable from "vuedraggable";
+import TheInput from "./TheInput.vue";
+import { computed, ref, defineComponent } from "vue";
+import { Icon } from "@vicons/utils";
+import Delete24Regular from "@vicons/fluent/Delete24Regular";
+import { getWeaterByPlace } from "@/utils/fetchWeater";
+import { useLoading } from "@/store/loading";
 
 export default defineComponent({
-  name: 'PlaceManager',
+  name: "PlaceManager",
   components: { draggable, Icon, TheInput, Delete24Regular },
   props: {
     places: {
       type: Array,
-      default: () => ([])
+      default: () => [],
     },
   },
   setup(props, { emit }) {
-
     const getPlaces = computed({
       get: () => [...props.places],
-      set: (val) => { emit("changeList", val) },
-    })
-    const loading = useLoading()
+      set: (val) => {
+        emit("changeList", val);
+      },
+    });
+    const loading = useLoading();
 
     const deletePlace = (id: number) => {
-      getPlaces.value = getPlaces.value.filter((place: any) => place.id !== id)
-    }
+      getPlaces.value = getPlaces.value.filter((place: any) => place.id !== id);
+    };
 
-    const error = ref(null)
+    const error = ref(null);
 
     const appPlace = async () => {
-      if (!newPlace.value) return alert('field can\'t be empty')
-      if (getPlaces.value.some((placeOfList: any) => { return placeOfList.name.toLowerCase() === newPlace.value.toLowerCase() })) return alert('already added')
-      if (!loading.isLoading) loading.switchLoading()
+      if (!newPlace.value) return alert("field can't be empty");
+      if (
+        getPlaces.value.some((placeOfList: any) => {
+          return (
+            placeOfList.name.toLowerCase() === newPlace.value.toLowerCase()
+          );
+        })
+      )
+        return alert("already added");
+      if (!loading.isLoading) loading.switchLoading();
 
-      const response = await getWeaterByPlace(newPlace.value)
+      const response = await getWeaterByPlace(newPlace.value);
 
       if (response.ok) {
-        loading.switchLoading()
+        loading.switchLoading();
         error.value = null;
-        const newPlace = await response.json()
+        const newPlace = await response.json();
+        newPlace.value = "";
 
-        getPlaces.value = [...getPlaces.value, newPlace]
+        getPlaces.value = [...getPlaces.value, newPlace];
       } else {
-        loading.switchLoading()
+        loading.switchLoading();
         const err = await response.json();
         error.value = err.message;
         throw new Error(err.message);
       }
-    }
+    };
 
-    const newPlace = ref('')
+    const newPlace = ref("");
 
     return {
       getPlaces,
       newPlace,
       appPlace,
       deletePlace,
-      error
-    }
-  }
+      error,
+    };
+  },
 });
 </script>
 

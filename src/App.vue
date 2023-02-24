@@ -3,7 +3,11 @@
     <div class="weather-widget__loader">
       <TheLoader />
     </div>
-    <Icon class="weather-widget__settings" size="18" @click="isSettingsOpen = !isSettingsOpen">
+    <Icon
+      class="weather-widget__settings"
+      size="18"
+      @click="isSettingsOpen = !isSettingsOpen"
+    >
       <Settings24Regular />
     </Icon>
     <div v-if="listOfPlaces.length">
@@ -11,38 +15,40 @@
         <WeatherPresentation :data="place" />
       </div>
     </div>
-    <div v-else>
-      Тут пока ничего нет...
-    </div>
-    <PlaceManager v-if="isSettingsOpen" :places="listOfPlaces" @changeList="addNewPlace" />
+    <div v-else>Тут пока ничего нет...</div>
+    <PlaceManager
+      v-if="isSettingsOpen"
+      :places="listOfPlaces"
+      @changeList="addNewPlace"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted } from "vue";
 import PlaceManager from "./components/PlaceManager.vue";
 import WeatherPresentation from "./components/WeatherPresentation.vue";
 import TheLoader from "./components/TheLoader.vue";
-import { Icon } from '@vicons/utils'
-import Settings24Regular from '@vicons/fluent/Settings24Regular'
-import { datca } from './datca'
-import { useLoading } from '@/store/loading'
-import { getWeaterByPlace, getWeaterByCoords } from './utils/fetchWeater'
+import { Icon } from "@vicons/utils";
+import Settings24Regular from "@vicons/fluent/Settings24Regular";
+import { datca } from "./datca";
+import { useLoading } from "@/store/loading";
+import { getWeaterByPlace, getWeaterByCoords } from "./utils/fetchWeater";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
     PlaceManager,
     Icon,
     Settings24Regular,
     WeatherPresentation,
-    TheLoader
+    TheLoader,
   },
-  setup(props, { emit }) {
-    const isSettingsOpen = ref(false)
+  setup() {
+    const isSettingsOpen = ref(false);
     const weatherData = ref(null);
     const listOfPlaces = ref<any>([]);
-    const loading = useLoading()
+    const loading = useLoading();
 
     const coordinates = ref<any>({
       lat: null,
@@ -50,24 +56,24 @@ export default defineComponent({
     });
 
     const getWeatherByCoords = async (): Promise<any> => {
-      if (!loading.isLoading) loading.switchLoading()
+      if (!loading.isLoading) loading.switchLoading();
       const response = await getWeaterByCoords(coordinates.value);
       if (response.ok) {
         const place = await response.json();
-        loading.switchLoading()
+        loading.switchLoading();
 
         // place.lastUpdated = Date.now();
         return place;
       } else {
-        loading.switchLoading()
+        loading.switchLoading();
         const err = await response.json();
         throw new Error(err.message);
       }
     };
 
     const addNewPlace = (place: any) => {
-      listOfPlaces.value = place
-    }
+      listOfPlaces.value = place;
+    };
 
     onMounted(async () => {
       // listOfPlaces.value.push(datca);
@@ -76,7 +82,7 @@ export default defineComponent({
           navigator.geolocation.getCurrentPosition(async ({ coords }) => {
             coordinates.value.lat = coords.latitude;
             coordinates.value.lon = coords.longitude;
-            const place = await getWeatherByCoords()
+            const place = await getWeatherByCoords();
             listOfPlaces.value.push(place);
             return;
           });
@@ -84,11 +90,20 @@ export default defineComponent({
           console.log("net dostupa");
         }
       }
-      listOfPlaces.value.map((place: any) => {
-        place = getWeaterByPlace(place.name);
+      listOfPlaces.value.map(async (place: any) => {
+        const response = await getWeaterByPlace(place.name);
+        if (response.ok) {
+          loading.switchLoading();
+          const newPlace = await response.json();
+
+          place = newPlace;
+        } else {
+          loading.switchLoading();
+          const err = await response.json();
+          throw new Error(err.message);
+        }
       });
     });
-
 
     return {
       coordinates,
@@ -96,13 +111,13 @@ export default defineComponent({
       weatherData,
       listOfPlaces,
       addNewPlace,
-      isSettingsOpen
+      isSettingsOpen,
     };
   },
 });
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -134,6 +149,5 @@ export default defineComponent({
     right: 10px;
     z-index: 100;
   }
-
 }
 </style>
