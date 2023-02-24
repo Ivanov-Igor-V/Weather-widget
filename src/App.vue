@@ -18,8 +18,8 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
 import PlaceManager from "./components/PlaceManager.vue";
 import WeatherPresentation from "./components/WeatherPresentation.vue";
 import TheLoader from "./components/TheLoader.vue";
@@ -27,7 +27,10 @@ import { Icon } from '@vicons/utils'
 import Settings24Regular from '@vicons/fluent/Settings24Regular'
 import { datca } from './datca'
 import { useLoading } from '@/store/loading'
-export default {
+import { getWeaterByPlace, getWeaterByCoords } from './utils/fetchWeater'
+
+export default defineComponent({
+  name: 'App',
   components: {
     PlaceManager,
     Icon,
@@ -36,25 +39,19 @@ export default {
     TheLoader
   },
   setup(props, { emit }) {
-    const API_KEY = "4635d9ccd0aa7dd5a9ece42020bebb56";
-
     const isSettingsOpen = ref(false)
-
     const weatherData = ref(null);
-    const listOfPlaces = ref([]);
-
+    const listOfPlaces = ref<any>([]);
     const loading = useLoading()
 
-    const coordinates = ref({
+    const coordinates = ref<any>({
       lat: null,
       lon: null,
     });
 
-    const getURI = (coordinates) => `https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=metric&appid=${API_KEY}`;
-
-    const getWeatherByCoords = async () => {
+    const getWeatherByCoords = async (): Promise<any> => {
       if (!loading.isLoading) loading.switchLoading()
-      const response = await fetch(getURI(coordinates.value));
+      const response = await getWeaterByCoords(coordinates.value);
       if (response.ok) {
         const place = await response.json();
         loading.switchLoading()
@@ -68,7 +65,7 @@ export default {
       }
     };
 
-    const addNewPlace = (place) => {
+    const addNewPlace = (place: any) => {
       listOfPlaces.value = place
     }
 
@@ -87,8 +84,8 @@ export default {
           console.log("net dostupa");
         }
       }
-      listOfPlaces.value.map((place) => {
-        place.weather = getWeatherByPlace(place);
+      listOfPlaces.value.map((place: any) => {
+        place = getWeaterByPlace(place.name);
       });
     });
 
@@ -102,7 +99,7 @@ export default {
       isSettingsOpen
     };
   },
-};
+});
 </script>
 
 <style lang="scss" >

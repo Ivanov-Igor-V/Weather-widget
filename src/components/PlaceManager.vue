@@ -22,20 +22,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import draggable from 'vuedraggable'
 import TheInput from './TheInput.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, defineComponent } from 'vue'
 import { Icon } from '@vicons/utils'
 import Delete24Regular from '@vicons/fluent/Delete24Regular'
+import { getWeaterByPlace } from '@/utils/fetchWeater'
 import { useLoading } from '@/store/loading'
 
-export default {
+export default defineComponent({
   name: 'PlaceManager',
   components: { draggable, Icon, TheInput, Delete24Regular },
   props: {
     places: {
       type: Array,
+      default: () => ([])
     },
   },
   setup(props, { emit }) {
@@ -46,26 +48,18 @@ export default {
     })
     const loading = useLoading()
 
-    const API_KEY = "4635d9ccd0aa7dd5a9ece42020bebb56";
-
-
-    const getURI = (newPlace) => `http://api.openweathermap.org/data/2.5/weather?q=${newPlace}&units=metric&APPID=${API_KEY}`;
-
-    const deletePlace = (id) => {
-      getPlaces.value = getPlaces.value.filter(place => place.id !== id)
-      console.log(getPlaces.value.filter(place => place.id !== id));
+    const deletePlace = (id: number) => {
+      getPlaces.value = getPlaces.value.filter((place: any) => place.id !== id)
     }
 
     const error = ref(null)
 
     const appPlace = async () => {
       if (!newPlace.value) return alert('field can\'t be empty')
-      if (getPlaces.value.some(placeOfList => { return placeOfList.name.toLowerCase() === newPlace.value.toLowerCase() })) return alert('already added')
+      if (getPlaces.value.some((placeOfList: any) => { return placeOfList.name.toLowerCase() === newPlace.value.toLowerCase() })) return alert('already added')
       if (!loading.isLoading) loading.switchLoading()
 
-      const response = await fetch(
-        getURI(newPlace.value)
-      );
+      const response = await getWeaterByPlace(newPlace.value)
 
       if (response.ok) {
         loading.switchLoading()
@@ -91,7 +85,7 @@ export default {
       error
     }
   }
-};
+});
 </script>
 
 <style scoped lang="scss">

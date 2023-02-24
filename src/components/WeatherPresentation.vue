@@ -55,9 +55,6 @@ export default {
             type: Object
         }
     },
-    setup(props) {
-
-    },
 }
 </script>
 
