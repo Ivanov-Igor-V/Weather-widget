@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import { Icon } from "@vicons/utils";
-import ArrowReplyDown24Filled from "@vicons/fluent/ArrowReplyDown24Filled";
+import { Icon } from '@vicons/utils';
+import ArrowReplyDown24Filled from '@vicons/fluent/ArrowReplyDown24Filled';
 export default {
-  name: "TheInput",
+  name: 'TheInput',
   components: {
     ArrowReplyDown24Filled,
     Icon,

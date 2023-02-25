@@ -23,21 +23,21 @@
 </template>
 
 <script lang="ts">
-import draggable from "vuedraggable";
-import TheInput from "./TheInput.vue";
-import { computed, ref, defineComponent, PropType } from "vue";
-import { Icon } from "@vicons/utils";
-import Delete24Regular from "@vicons/fluent/Delete24Regular";
-import { getWeaterByPlace } from "@/utils/fetchWeater";
+import draggable from 'vuedraggable';
+import TheInput from './TheInput.vue';
+import { computed, ref, defineComponent, PropType } from 'vue';
+import { Icon } from '@vicons/utils';
+import Delete24Regular from '@vicons/fluent/Delete24Regular';
+import { getWeaterByPlace } from '@/utils/fetchWeater';
 import {
   putPlaceToStorage,
   removePlaceFromStorage,
-} from "@/utils/storageHelper";
-import { useLoading } from "@/store/loading";
-import { Place } from "@/types/Place";
+} from '@/utils/storageHelper';
+import { useLoading } from '@/store/loading';
+import { Place } from '@/types/Place';
 
 export default defineComponent({
-  name: "PlaceManager",
+  name: 'PlaceManager',
   components: { draggable, Icon, TheInput, Delete24Regular },
   props: {
     places: {
@@ -49,7 +49,7 @@ export default defineComponent({
     const getPlaces = computed({
       get: () => [...props.places],
       set: (val) => {
-        emit("changeList", val);
+        emit('changeList', val);
       },
     });
     const loading = useLoading();
@@ -72,7 +72,7 @@ export default defineComponent({
           );
         })
       )
-        return alert("already added");
+        return alert('already added');
 
       loading.switchLoading(true);
 
@@ -84,7 +84,7 @@ export default defineComponent({
         const place = await response.json();
         putPlaceToStorage(place.name);
         getPlaces.value = [...getPlaces.value, place];
-        newPlace.value = "";
+        newPlace.value = '';
       } else {
         loading.switchLoading(false);
         const err = await response.json();
@@ -93,7 +93,7 @@ export default defineComponent({
       }
     };
 
-    const newPlace = ref("");
+    const newPlace = ref('');
 
     return {
       getPlaces,

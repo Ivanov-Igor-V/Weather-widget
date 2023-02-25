@@ -1,6 +1,6 @@
-import { Coordinates } from "@/types/Place";
+import { Coordinates } from '@/types/Place';
 
-const API_KEY = "4635d9ccd0aa7dd5a9ece42020bebb56";
+const API_KEY = '4635d9ccd0aa7dd5a9ece42020bebb56';
 
 const getUriByPlace = (newPlace: string) =>
   `http://api.openweathermap.org/data/2.5/weather?q=${newPlace}&units=metric&APPID=${API_KEY}`;

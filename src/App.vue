@@ -25,19 +25,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
-import PlaceManager from "./components/PlaceManager.vue";
-import WeatherPresentation from "./components/WeatherPresentation.vue";
-import TheLoader from "./components/TheLoader.vue";
-import { Icon } from "@vicons/utils";
-import Settings24Regular from "@vicons/fluent/Settings24Regular";
-import { datca } from "./datca";
-import { useLoading } from "@/store/loading";
-import { getWeaterByPlace, getWeaterByCoords } from "./utils/fetchWeater";
-import { Place, Coordinates } from "@/types/Place";
+import { defineComponent, ref, onMounted } from 'vue';
+import PlaceManager from './components/PlaceManager.vue';
+import WeatherPresentation from './components/WeatherPresentation.vue';
+import TheLoader from './components/TheLoader.vue';
+import { Icon } from '@vicons/utils';
+import Settings24Regular from '@vicons/fluent/Settings24Regular';
+import { useLoading } from '@/store/loading';
+import { getWeaterByPlace, getWeaterByCoords } from './utils/fetchWeater';
+import { Place, Coordinates } from '@/types/Place';
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     PlaceManager,
     Icon,
@@ -62,8 +61,6 @@ export default defineComponent({
       if (response.ok) {
         const place = await response.json();
         loading.switchLoading(false);
-
-        // place.lastUpdated = Date.now();
         return place;
       } else {
         loading.switchLoading(false);
@@ -85,14 +82,14 @@ export default defineComponent({
             const place = await getWeatherByCoords();
             const arrayOfPlaces = [place.name];
             localStorage.setItem(
-              "weatherWidget",
+              'weatherWidget',
               JSON.stringify(arrayOfPlaces)
             );
             listOfPlaces.value.push(place);
           });
           return;
         } else {
-          console.log("net dostupa");
+          console.log('net dostupa');
           return;
         }
       }
@@ -128,7 +125,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#app {
+#weather-widget {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -136,6 +133,7 @@ export default defineComponent({
   font-size: 12px;
   color: white;
   max-width: 200px;
+  line-height: 1.5em;
 
   .xicon {
     cursor: pointer;

@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import { useLoading } from "@/store/loading";
+import { useLoading } from '@/store/loading';
 
 export default {
-  name: "TheLoader",
+  name: 'TheLoader',
   setup() {
     const loading = useLoading();
 

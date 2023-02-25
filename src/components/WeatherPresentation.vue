@@ -42,12 +42,12 @@
 </template>
 
 <script>
-import { Icon } from "@vicons/utils";
-import KeyboardShift24Filled from "@vicons/fluent/KeyboardShift24Filled";
-import TopSpeed24Regular from "@vicons/fluent/TopSpeed24Regular";
+import { Icon } from '@vicons/utils';
+import KeyboardShift24Filled from '@vicons/fluent/KeyboardShift24Filled';
+import TopSpeed24Regular from '@vicons/fluent/TopSpeed24Regular';
 
 export default {
-  name: "WeatherPresentation",
+  name: 'WeatherPresentation',
   components: {
     KeyboardShift24Filled,
     Icon,
@@ -92,6 +92,7 @@ export default {
     div {
       display: inline-flex;
       white-space: pre;
+      align-items: center;
     }
   }
 

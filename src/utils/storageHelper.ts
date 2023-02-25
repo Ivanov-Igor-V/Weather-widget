@@ -1,5 +1,6 @@
 export const putPlaceToStorage = (newPlace: string) => {
   const storage = JSON.parse(localStorage.getItem(`weatherWidget`) as any);
+  if (storage.length > 3) return alert("Can't add more places");
   storage.push(newPlace);
   localStorage.setItem(`weatherWidget`, JSON.stringify(storage));
 };
