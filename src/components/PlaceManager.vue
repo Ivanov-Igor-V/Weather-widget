@@ -32,6 +32,7 @@ import { getWeaterByPlace } from '@/utils/fetchWeater';
 import {
   putPlaceToStorage,
   removePlaceFromStorage,
+  isStorageFilled,
 } from '@/utils/storageHelper';
 import { useLoading } from '@/store/loading';
 import { Place } from '@/types/Place';
@@ -65,6 +66,7 @@ export default defineComponent({
 
     const appPlace = async () => {
       if (!newPlace.value) return alert("field can't be empty");
+      if (isStorageFilled()) return alert("Can't add more places");
       if (
         getPlaces.value.some((placeOfList: Place) => {
           return (

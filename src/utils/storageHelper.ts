@@ -15,3 +15,11 @@ export const removePlaceFromStorage = (name: string) => {
     localStorage.setItem(`weatherWidget`, JSON.stringify(storage));
   }
 };
+
+export const isStorageFilled = () => {
+  const storage = JSON.parse(localStorage.getItem(`weatherWidget`) as any);
+  if (storage.length > 2) return true;
+  console.log(storage.length);
+
+  return false;
+};

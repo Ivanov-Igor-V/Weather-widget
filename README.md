@@ -1,19 +1,6 @@
-# weather-widget
+for adding this widget to your html, you should paste:
 
-## Project setup
-```
-yarn install
-```
+    <div id="weather-widget"></div>
+    <script type="module" defer src="/weather-widget.js"></script>
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+    dev: yarrn serve

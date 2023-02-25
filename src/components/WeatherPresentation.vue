@@ -67,7 +67,6 @@ export default {
   max-width: 200px;
   border-radius: 10px;
   padding: 10px;
-  height: 200px;
   background-color: rgb(8, 68, 197);
   font-size: 12px;
 
