@@ -6,7 +6,7 @@
         <template #item="{ element }">
           <div class="place-manager__item">
             <div>{{ element.name }}</div>
-            <Icon :size="18" @click="deletePlace(element.id)">
+            <Icon :size="18" @click="deletePlace(element.name)">
               <Delete24Regular />
             </Icon>
           </div>
@@ -29,6 +29,10 @@ import { computed, ref, defineComponent, PropType } from "vue";
 import { Icon } from "@vicons/utils";
 import Delete24Regular from "@vicons/fluent/Delete24Regular";
 import { getWeaterByPlace } from "@/utils/fetchWeater";
+import {
+  putPlaceToStorage,
+  removePlaceFromStorage,
+} from "@/utils/storageHelper";
 import { useLoading } from "@/store/loading";
 import { Place } from "@/types/Place";
 
@@ -50,10 +54,11 @@ export default defineComponent({
     });
     const loading = useLoading();
 
-    const deletePlace = (id: number) => {
+    const deletePlace = (name: string) => {
       getPlaces.value = getPlaces.value.filter(
-        (place: Place): boolean => place.id !== id
+        (place: Place): boolean => place.name !== name
       );
+      removePlaceFromStorage(name);
     };
 
     const error = ref(null);
@@ -68,19 +73,20 @@ export default defineComponent({
         })
       )
         return alert("already added");
-      if (!loading.isLoading) loading.switchLoading();
+
+      loading.switchLoading(true);
 
       const response = await getWeaterByPlace(newPlace.value);
 
       if (response.ok) {
-        loading.switchLoading();
+        loading.switchLoading(false);
         error.value = null;
-        const newPlace = await response.json();
+        const place = await response.json();
+        putPlaceToStorage(place.name);
+        getPlaces.value = [...getPlaces.value, place];
         newPlace.value = "";
-
-        getPlaces.value = [...getPlaces.value, newPlace];
       } else {
-        loading.switchLoading();
+        loading.switchLoading(false);
         const err = await response.json();
         error.value = err.message;
         throw new Error(err.message);

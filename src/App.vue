@@ -57,16 +57,16 @@ export default defineComponent({
     });
 
     const getWeatherByCoords = async (): Promise<Place> => {
-      if (!loading.isLoading) loading.switchLoading();
+      loading.switchLoading(true);
       const response = await getWeaterByCoords(coordinates.value);
       if (response.ok) {
         const place = await response.json();
-        loading.switchLoading();
+        loading.switchLoading(false);
 
         // place.lastUpdated = Date.now();
         return place;
       } else {
-        loading.switchLoading();
+        loading.switchLoading(false);
         const err = await response.json();
         throw new Error(err.message);
       }
@@ -77,29 +77,38 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      // listOfPlaces.value.push(datca);
-      if (!listOfPlaces.value.length) {
+      if (!localStorage.weatherWidget) {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(async ({ coords }) => {
             coordinates.value.lat = coords.latitude;
             coordinates.value.lon = coords.longitude;
             const place = await getWeatherByCoords();
+            const arrayOfPlaces = [place.name];
+            localStorage.setItem(
+              "weatherWidget",
+              JSON.stringify(arrayOfPlaces)
+            );
             listOfPlaces.value.push(place);
-            return;
           });
+          return;
         } else {
           console.log("net dostupa");
+          return;
         }
       }
-      listOfPlaces.value.map(async (place: Place) => {
-        const response = await getWeaterByPlace(place.name);
-        if (response.ok) {
-          loading.switchLoading();
-          const newPlace = await response.json();
 
-          place = newPlace;
+      const list = JSON.parse(localStorage.weatherWidget);
+
+      list.map(async (name: string) => {
+        loading.switchLoading(true);
+
+        const response = await getWeaterByPlace(name);
+        if (response.ok) {
+          loading.switchLoading(false);
+          const newPlace = await response.json();
+          listOfPlaces.value.push(newPlace);
         } else {
-          loading.switchLoading();
+          loading.switchLoading(false);
           const err = await response.json();
           throw new Error(err.message);
         }

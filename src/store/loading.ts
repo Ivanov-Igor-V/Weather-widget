@@ -6,8 +6,8 @@ export const useLoading = defineStore({
     getLoading: (state) => state.isLoading,
   },
   actions: {
-    switchLoading() {
-      this.isLoading = !this.isLoading;
+    switchLoading(isOn: boolean) {
+      this.isLoading = isOn;
     },
   },
 });
